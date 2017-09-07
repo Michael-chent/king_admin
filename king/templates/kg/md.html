@@ -1,0 +1,16 @@
+<table border="1">
+    <thead>
+        {% for title in head_list %}
+            <td>{{ title }}</td>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for item in content %}
+            <tr>
+                {% for val in item %}
+                    <td>{{ val }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
