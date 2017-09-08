@@ -2,6 +2,7 @@
 #Author : Michael_chen
 
 from django.shortcuts import render,HttpResponse
+from django.urls import reverse
 
 class BaseKingAdmin(object):
     list_display = '__all__'
@@ -10,6 +11,8 @@ class BaseKingAdmin(object):
         self.model_class = model_class
         self.site = site
         self.request = None
+        self.app_label = model_class._meta.app_label
+        self.model_name = model_class._meta.model_name
 
     @property
     def urls(self):
@@ -29,12 +32,21 @@ class BaseKingAdmin(object):
         :param request:
         :return:
         """
+        # 生成页面上：添加按钮
+        from django.http.request import QueryDict
+        param_dict = QueryDict(mutable=True) #mutable默认为False，意思为禁止修改，强行修改会报错
+        if request.GET:
+            param_dict['_changelistfilter'] = request.GET.urlencode()
+        base_add_url = reverse('{0}:{1}_{2}_add'.format(self.site.namespace,self.app_label,self.model_name))
+        add_url = '{0}?{1}'.format(base_add_url,param_dict.urlencode())
+
         self.request = request
         result_list = self.model_class.objects.all()
         context = {
             'result_list':result_list,
             'list_display':self.list_display,
-            'kgadmin_obj':self
+            'kgadmin_obj':self,
+            'add_url':add_url
         }
         return render(request,'kg/change_list.html',context)
 
