@@ -15,9 +15,11 @@ class KingUserInfo(v1.BaseKingAdmin):
             namespace = self.site.namespace
             app_name = self.model_class._meta.app_label
             model_name = self.model_class._meta.model_name
-            name = "{0}:{1}_{2}_change".format(namespace,app_name,model_name)
-            url = reverse(name,args=(obj.pk,))
-            return mark_safe("<a href='{0}'>编辑</a>".format(url))
+            edit_name = "{0}:{1}_{2}_change".format(namespace,app_name,model_name)
+            edit_url = reverse(edit_name,args=(obj.pk,))
+            del_name = "{0}:{1}_{2}_delete".format(namespace,app_name,model_name)
+            del_url = reverse(del_name,args=(obj.pk,))
+            return mark_safe("<a href='{0}'>编辑</a> | <a href='{1}'>删除</a>".format(edit_url,del_url))
 
     def checkbox(self,obj=None,is_header=False):
         if is_header:

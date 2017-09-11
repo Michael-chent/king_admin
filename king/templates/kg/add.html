@@ -1,0 +1,29 @@
+{% load kg_list %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <h1>添加数据</h1>
+        {% show_form form %}
+    </div>
+
+{#    <h1>添加数据</h1>#}
+{#    <form action="" method="post" novalidate>#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <div>==================== 分隔线 ====================</div>#}
+{#        {% for item in form %}#}
+{#            <p>{{ item.name }}:{{ item }}</p>#}
+{#        {% endfor %}#}
+{#        <input type="submit" value="提交">#}
+{#    </form>#}
+
+    <script src="/static/js/jquery-3.2.1.js"></script>
+    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+</body>
+</html>
