@@ -6,24 +6,41 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="{% static 'kg/plugins/bootstrap-3.3.7-dist/css/bootstrap.css' %}">
+    <style>
+        .comb-search a{
+            display: inline-block;
+            border: 1px solid #dddddd;
+            padding: 5px 8px;
+            margin: 5px;
+        }
+        .comb-search a.active{
+            background-color: #2aabd2;
+            color: white;
+        }
+        .comb-search .all-area{
+            float: left;
+        }
+        .comb-search .others-area{
+            padding-left: 70px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>数据列表</h1>
         {% if filter_list %}
-            <div class="row">
+            <div class="row comb-search">
                 <h3>组合搜索</h3>
-            {% for queryset in filter_list %}
-                <div class="row">
-                    {% for row in queryset %}
-                        <a href="">{{ row }}</a>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-
+                {% for fl in filter_list %}
+                    <div class="row">
+                        {% for row in fl %}
+                            {{ row }}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             </div>
         {% endif %}
-        <form action="" method="post">
+        <form method="post">
             {% csrf_token %}
             {% if action_list %}
                 <div class="row">

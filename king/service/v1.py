@@ -1,9 +1,11 @@
 #Time : 2017/9/7 9:23
 #Author : Michael_chen
 
+import copy
+
 from django.shortcuts import render,HttpResponse,redirect
 from django.urls import reverse
-import copy
+
 
 class BaseKingAdmin(object):
     list_display = '__all__'
@@ -35,7 +37,7 @@ class BaseKingAdmin(object):
 
     @property
     def urls(self):
-        from django.conf.urls import url,include
+        from django.conf.urls import url
         info = self.model_class._meta.app_label,self.model_class._meta.model_name
         urlpatterns = [
             url(r'^$',self.changelist_view,name='%s_%s_changelist'%info),
@@ -62,7 +64,7 @@ class BaseKingAdmin(object):
         self.request = request
         # 分页开始
         condition = {}
-        from utils.pager import PageInfo
+        from king.utils.pager import PageInfo
         all_count = self.model_class.objects.filter(**condition).count() #筛选条件下，共有多少数据
         base_page_url = reverse("{0}:{1}_{2}_changelist".format(self.site.namespace,self.app_label,self.model_name))
         page_param_dict = copy.deepcopy(request.GET)
@@ -87,23 +89,27 @@ class BaseKingAdmin(object):
             return redirect(action_page_url)
 
         # ################ 组合搜索操作 ##################
+        from king.utils.filter_code import FilterList
         filter_list = []
         for option in self.filter_list:
             if option.is_func:
-                data_list = option.field_or_func(self,request)
+                data_list = option.field_or_func(self,option,request)
             else:
-                from django.db.models import ForeignKey,ManyToManyField,OneToOneField
+                from django.db.models import ForeignKey,ManyToManyField
                 field = self.model_class._meta.get_field(option.field_or_func)
 
                 # 因为OneToOneField 继承 ForeignKey,如果有OneToOne字段，一定要写在ForeignKey的前面
                 # if isinstance(field,OneToOneField):
                 #     data_list = field.rel.model.objects.all()
                 if isinstance(field,ForeignKey):
-                    data_list = field.rel.model.objects.all() # UserGroup 表
+                    # data_list = field.rel.model.objects.all() # UserGroup 表
+                    data_list = FilterList(option,field.rel.model.objects.all(),request)
                 elif isinstance(field,ManyToManyField):
-                    data_list = field.rel.model.objects.all() # Role 表
+                    # data_list = field.rel.model.objects.all() # Role 表
+                    data_list = FilterList(option, field.rel.model.objects.all(), request)
                 else:
-                    data_list = field.model.objects.all()
+                    # data_list = field.model.objects.all()
+                    data_list = FilterList(option, field.model.objects.all(), request)
             filter_list.append(data_list)
 
         context = {

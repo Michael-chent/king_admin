@@ -50,10 +50,17 @@ class KingUserInfo(v1.BaseKingAdmin):
 
     action_list = [initial,multi_del]
 
-    from .filter_code import FilterOption
+    from king.utils.filter_code import FilterOption
+
+    def email(self,option,request):
+        from king.utils.filter_code import FilterList
+        queryset = models.UserInfo.objects.filter(id__gt=3)
+        return FilterList(option,queryset,request)
+
     filter_list = [
-        FilterOption('username',False),
-        FilterOption('ug',False),
+        FilterOption('username',False,text_func_name="text_username",val_func_name="value_username"),
+        FilterOption(email,False,text_func_name="text_email",val_func_name="value_email"),
+        FilterOption('ug',True),
         FilterOption('m2m',False),
     ]
 
