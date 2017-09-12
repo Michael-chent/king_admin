@@ -3,17 +3,17 @@
     {% for col in form %}
         <div class="form-group col-sm-6">
             <label class="col-sm-3 control-label">
-                {% if col.item.field.label %}
-                    {{ col.item.field.label }}
+                {% if col.is_popup %}
+                    {{ col.item.field.label }}:
                 {% else %}
-                    {{ col.item.name }}
+                    {{ col.item.field.label }}:
                 {% endif %}
             </label>
             <div class="col-sm-9" style="position:relative">
                 {{ col.item }}
-                {% if col.popup %}
+                {% if col.is_popup %}
                     <div style="position:absolute;right: -5px;top:8px;z-index:9999;">
-                        <a href="javascript:openPopup('{{ col.popup_url }}')" class="glyphicon glyphicon-search"></a>
+                        <a href="#" onclick="openPopup('{{ col.popup_url }}')" class="glyphicon glyphicon-search"></a>
                     </div>
                 {% endif %}
                 {{ col.item.errors.0 }}
@@ -27,15 +27,15 @@
     </div>
 </form>
 <script>
-    function popupCallback(response) {
+    function popupCallBack(data_dict) {
         var tag = document.createElement('option');
-        tag.value = response.pk;
-        tag.innerHTML = response.value;
+        tag.innerHTML = data_dict.text;
         tag.setAttribute('selected','selected');
-        document.getElementById(response.popup_id).appendChild(tag);
+        tag.setAttribute('value',data_dict.pk);
+        document.getElementById(data_dict.popid).appendChild(tag);
     }
     function openPopup(url){
-        var popupPage = window.open(url,, "xxxx", "status=1, height:500, width:600, toolbar=0, resizeable=0");
+        var popupPage = window.open(url,url, "status=1, height:500, width:600, toolbar=0, resizeable=0");
     }
 </script>
 

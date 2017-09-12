@@ -16,8 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from king.service import v1
+from app01 import views
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url(r'^kg/',v1.site.urls)
+    url(r'^kg/',v1.site.urls),
+    url(r'^test/',views.test),
+    url(r'add_test/',views.add_test),
 ]

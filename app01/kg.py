@@ -25,11 +25,37 @@ class KingUserInfo(v1.BaseKingAdmin):
         if is_header:
             return '选项'
         else:
-            tag = "<input type='checkbox' value='{0}' />".format(obj.pk)
+            tag = "<input name='pk' type='checkbox' value='{0}' />".format(obj.pk)
             return mark_safe(tag)
 
     # list_display = {'选项':checkbox,'ID':'id', '用户名':'username', '邮箱':'email', '操作':func}
     list_display = [checkbox,'id', 'username','email', func]
+
+    def initial(self,request):
+        """
+        下拉框，显示初始化
+        :param request:
+        :return: True，返回上次URL带着参数的页面，False，返回首页
+        """
+        pk_list = request.POST.getlist('pk')
+        models.UserInfo.objects.filter(pk__in=pk_list).update(username='Michael')
+        return True
+
+    initial.text = '初始化'
+
+    def multi_del(self,request):
+        pass
+
+    multi_del.text = '批量删除'
+
+    action_list = [initial,multi_del]
+
+    from .filter_code import FilterOption
+    filter_list = [
+        FilterOption('username',False),
+        FilterOption('ug',False),
+        FilterOption('m2m',False),
+    ]
 
 v1.site.register(models.UserInfo,KingUserInfo)
 
@@ -38,3 +64,4 @@ class KingRole(v1.BaseKingAdmin):
     list_display = ['id','name']
 
 v1.site.register(models.Role,KingRole)
+v1.site.register(models.UserGroup)
